@@ -1,5 +1,6 @@
 package com.gopivotal.cf.samples.hadoop.config;
 
+import com.gopivotal.cf.samples.hadoop.connector.spring.HdfsServiceConfiguration;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +11,8 @@ import org.springframework.context.annotation.Profile;
 public class CloudConfig extends AbstractCloudConfig {
 
     @Bean
-    public org.apache.hadoop.conf.Configuration configuration() {
-        return connectionFactory().service(org.apache.hadoop.conf.Configuration.class);
+    public HdfsServiceConfiguration configuration() {
+        return connectionFactory().service(HdfsServiceConfiguration.class);
     }
 
 }

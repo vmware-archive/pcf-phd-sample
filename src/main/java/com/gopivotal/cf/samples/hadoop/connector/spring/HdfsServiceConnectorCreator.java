@@ -5,14 +5,13 @@ import org.apache.hadoop.conf.Configuration;
 import org.springframework.cloud.service.AbstractServiceConnectorCreator;
 import org.springframework.cloud.service.ServiceConnectorConfig;
 
-public class HdfsServiceConnectorCreator extends AbstractServiceConnectorCreator<Configuration, HdfsServiceInfo> {
+public class HdfsServiceConnectorCreator extends AbstractServiceConnectorCreator<HdfsServiceConfiguration, HdfsServiceInfo> {
     @Override
-    public Configuration create(HdfsServiceInfo serviceInfo, ServiceConnectorConfig serviceConnectorConfig) {
+    public HdfsServiceConfiguration create(HdfsServiceInfo serviceInfo, ServiceConnectorConfig serviceConnectorConfig) {
         Configuration configuration = new Configuration(true);
         configuration.set("fs.default.name", serviceInfo.getHdfsNamenode());
         configuration.set("hadoop.job.ugi", serviceInfo.getHdfsUser());
-        configuration.set("phd.tenant.root", serviceInfo.getHdfsDir());
 
-        return configuration;
+        return new HdfsServiceConfiguration(configuration, serviceInfo.getHdfsDir());
     }
 }

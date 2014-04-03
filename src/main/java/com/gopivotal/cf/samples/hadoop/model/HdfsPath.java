@@ -7,15 +7,15 @@ import java.util.List;
 
 public class HdfsPath extends ResourceSupport {
 
-    private String name;
-    private List<HdfsFile> files = new ArrayList<>();
+    private final String name;
+    private final List<HdfsFile> files = new ArrayList<>();
+
+    public HdfsPath(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<HdfsFile> getFiles() {

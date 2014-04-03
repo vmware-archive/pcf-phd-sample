@@ -1,8 +1,8 @@
 package com.gopivotal.cf.samples.hadoop.web;
 
+import com.gopivotal.cf.samples.hadoop.connector.spring.HdfsServiceConfiguration;
 import com.gopivotal.cf.samples.hadoop.model.HdfsFile;
 import com.gopivotal.cf.samples.hadoop.model.HdfsPath;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,29 +23,23 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RestController
 public class HdfsController {
 
-    private String tenantPath;
-    private String tenant;
-
     @Autowired
-    private Configuration configuration;
+    private HdfsServiceConfiguration configuration;
 
     private FsShell shell;
 
     @PostConstruct
     public void init() {
-        shell = new FsShell(configuration);
-        tenantPath = pathPrefix(configuration.get("phd.tenant.root"));
-        tenant = pathSuffix(configuration.get("phd.tenant.root"));
+        shell = new FsShell(configuration.getHdfsConfiguration());
     }
 
     @RequestMapping(value = "/hdfs", method = RequestMethod.GET)
     public ResponseEntity<HdfsPath> ls(@RequestParam(value = "path", required = false) String fsPath) {
         if (fsPath == null) {
-            fsPath = tenant;
+            fsPath = pathSuffix(configuration.getHdfsDir());
         }
 
-        HdfsPath path = new HdfsPath();
-        path.setName(tenantPath + Path.SEPARATOR + fsPath);
+        HdfsPath path = new HdfsPath(pathPrefix(configuration.getHdfsDir()) + Path.SEPARATOR + fsPath);
 
         path.add(linkTo(methodOn(HdfsController.class).ls(fsPath)).withSelfRel());
 
@@ -59,7 +53,7 @@ public class HdfsController {
             }
         }
 
-        return new ResponseEntity<HdfsPath>(path, HttpStatus.OK);
+        return new ResponseEntity<>(path, HttpStatus.OK);
     }
 
     private String pathSuffix(String path) {
