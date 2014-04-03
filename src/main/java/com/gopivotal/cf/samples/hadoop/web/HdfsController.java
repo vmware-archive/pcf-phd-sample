@@ -42,6 +42,7 @@ public class HdfsController {
         HdfsPath path = new HdfsPath(pathPrefix(configuration.getHdfsDir()) + Path.SEPARATOR + fsPath);
 
         path.add(linkTo(methodOn(HdfsController.class).ls(fsPath)).withSelfRel());
+        path.add(linkTo(methodOn(HdfsController.class).ls(pathPrefix(path.getName()))).withRel("parent"));
 
         Collection<FileStatus> files = shell.ls(false, path.getName());
 
